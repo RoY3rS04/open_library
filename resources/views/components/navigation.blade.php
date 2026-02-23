@@ -1,4 +1,4 @@
-<aside {{ $attributes->merge(['class' => 'h-full p-4 relative nav-container']) }}>
+<aside {{ $attributes->merge(['class' => 'h-full px-4 py-8 relative nav-container']) }}>
     <nav class="flex flex-col h-full">
         <x-navigation_item class="font-bold text-xl" link="/" link_title="OpenLibrary">
             <x-icons.logo class="size-10"></x-icons.logo>
@@ -14,8 +14,19 @@
                 <x-icons.archive class="size-6"></x-icons.archive>
             </x-navigation_item>
         </div>
-        <div>
-            <span>User</span>
+        <div class="space-y-6">
+            <x-navigation_item link="/user/settings" link_title="Settings">
+                <x-icons.settings></x-icons.settings>
+            </x-navigation_item>
+            @auth
+                <form action="/logout" method="POST" class="flex gap-x-3">
+                    @csrf
+                    @method('DELETE')
+                    <x-Forms.button class="flex gap-x-2" type="submit" text="Logout">
+                        <x-icons.logout></x-icons.logout>
+                    </x-Forms.button>
+                </form>
+            @endauth
         </div>
     </nav>
     <!-- <button class="absolute bg-gray-200 p-2 rounded-full top-1/2 -translate-y-1/2 -right-7 cursor-pointer nav-btn">
