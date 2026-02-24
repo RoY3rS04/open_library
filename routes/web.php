@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
-});
+})->middleware('auth');
 
 Route::get('/register', [AuthController::class, 'create']);
 
@@ -22,6 +22,8 @@ Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $requ
 Route::get('/login', [AuthController::class, 'loginView'])->name('login');
 
 Route::post('/login', [AuthController::class, 'login']);
+
+Route::delete('/logout', [AuthController::class, 'logout'])->name('logout');
 
 Route::get('/verify', function () {
     return view('Mail.confirm_email');

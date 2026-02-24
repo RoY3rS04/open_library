@@ -15,7 +15,7 @@ use Illuminate\View\View;
 class AuthController extends Controller
 {
     public function create(Request $request): View {
-        return view('auth.register');
+        return view('Auth.register');
     }
 
     public function store(RegisterUser $request): RedirectResponse {
@@ -32,31 +32,35 @@ class AuthController extends Controller
 
         Auth::login($user);
 
-        return redirect('/login');
+        return redirect('/')
+            ->with('success', 'A verification link has been sent to your email.');
     }
 
     public function loginView(Request $request): View {
-        return view('auth.login');
+        return view('Auth.login');
     }
 
     public function login(LoginRequest $request): RedirectResponse
     {
-        $validated = $request->validated();
+        $credentials = $request->validated();
 
-        $user = User::where('email', $validated['email'])->first();
+        if(Auth::attempt($credentials)) {
+            $request->session()->regenerate();
 
-        if(! Hash::check($validated['password'], $user->password)) {
-            return back()->withErrors([
-                'msg' => 'The provided credentials do not match our records.',
-            ]);
+            return redirect()->intended('/');
         }
 
-        Auth::login($user);
-
-        return redirect('/');
+        return back()->withErrors([
+            'msg' => 'The provided credentials do not match our records.',
+        ])->onlyInput('email');
     }
 
-    public function logout(): RedirectResponse {
+    public function logout(Request $request): RedirectResponse {
         Auth::logout();
+
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect('/login');
     }
 }

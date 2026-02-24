@@ -71,6 +71,6 @@ class User extends Authenticatable implements MustVerifyEmail
             ]
         );
 
-        Mail::to($this->email)->send(new ConfirmEmail($this, $url));
+        Mail::to($this->email)->queue(new ConfirmEmail($this, $url));
     }
 }

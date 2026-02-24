@@ -38,7 +38,7 @@ class ConfirmEmail extends Mailable
     public function content(): Content
     {
         return new Content(
-            markdown: 'mail.confirm_email',
+            markdown: 'Mail.confirm_email',
             with: [
                 'user' => $this->user,
                 'url' => $this->url,
