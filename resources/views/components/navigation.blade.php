@@ -10,7 +10,7 @@
             <x-navigation_item link="/books/create" link_title="Upload a Book">
                 <x-icons.upload class="size-6"></x-icons.upload>
             </x-navigation_item>
-            <x-navigation_item link="/books/top" link_title="Submitted Books">
+            <x-navigation_item link="/books" link_title="Submitted Books">
                 <x-icons.archive class="size-6"></x-icons.archive>
             </x-navigation_item>
         </div>
