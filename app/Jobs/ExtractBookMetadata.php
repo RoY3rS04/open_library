@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
 use Laravel\Ai\Files\Document;
 use Spatie\PdfToImage\Pdf;
+use Symfony\Component\Process\Process;
 
 class ExtractBookMetadata implements ShouldQueue
 {
@@ -42,32 +43,35 @@ class ExtractBookMetadata implements ShouldQueue
     {
         $pdfPath = base_path('storage/app/private/' . $this->filePath);
 
+        $outputPath = base_path('storage/app/private/mini/' . $this->filePath);
+
+        $process = new Process([
+            'qpdf',
+            $pdfPath,
+            '--pages',
+            $pdfPath,
+            '1-10',
+            '--',
+            $outputPath,
+        ]);
+
+        $process->run();
+
+        if (!$process->isSuccessful()) {
+            throw new \Exception($process->getErrorOutput());
+        }
+
         $response = $this->bookAnalyzer->prompt(
             'Analyze this attached book and extract its metadata',
             attachments: [
-                Document::fromPath(
-                    $pdfPath,
-                ),
+                Document::fromPath($outputPath)
             ],
             model: 'gemini-2.5-flash'
         );
 
         $data = $response->toArray();
 
-        $imagePath = base_path('storage/app/public/' . File::name($this->filePath)) . '.png';
-
-        Log::info($data);
-        $pdf = new Pdf($pdfPath);
-        $pdf->setPage(1)
-            ->setOutputFormat('png')
-            ->saveImage($imagePath);
-
-        $image = new \Imagick($imagePath);
-        $image->trimImage(0);
-        $image->setImagePage(0, 0, 0, 0);
-        $image->writeImage($imagePath);
-
-        DB::transaction(function () use ($data, $pdfPath, $imagePath) {
+        DB::transaction(function () use ($data, $pdfPath) {
 
             $authorIds = collect($data['authors'])
                 ->map(function ($author) {
@@ -98,11 +102,11 @@ class ExtractBookMetadata implements ShouldQueue
                 'publisher' => $data['publisher'],
             ]);
 
-            $book->addMedia($imagePath)
-                ->toMediaCollection('covers');
-
             $book->authors()->sync($authorIds);
             $book->categories()->sync($categoryIds);
+
+            ExtractBookCover::dispatch($book, $pdfPath)
+                ->afterCommit();
         });
     }
 }
