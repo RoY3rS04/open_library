@@ -47,15 +47,25 @@ class BookAnalyzer implements Agent, Conversational, HasTools, HasStructuredOutp
     public function schema(JsonSchema $schema): array
     {
         return [
-            'title' => $schema->string()->required(),
-            'author' => $schema->string()->required(),
-            'publisher' => $schema->string(),
+            'title' => $schema->string()->max(20)->required(),
+            'authors' => $schema->array()
+                ->items(
+                    $schema->object([
+                        'first_name' => $schema->string()->max(10)->required(),
+                        'last_name' => $schema->string()->max(10)->required(),
+                    ])
+                )
+                ->required(),
+            'publisher' => $schema->string()->required(),
             'isbn' => $schema->string(),
             'pages' => $schema->integer()->required(),
             'release_date' => $schema->string()->required(),
             'language' => $schema->string()->required(),
-            'category' => $schema->string()->required(),
+            'categories' => $schema->array()
+                ->items($schema->string()->max(20))
+                ->required(),
             'synopsis' => $schema->string()->required(),
+            'edition' => $schema->string()->required(),
         ];
     }
 }

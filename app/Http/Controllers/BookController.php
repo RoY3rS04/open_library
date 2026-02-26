@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Ai\Agents\BookAnalyzer;
 use App\Http\Requests\Books\BookRequest;
+use App\Jobs\ExtractBookMetadata;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
@@ -20,18 +21,16 @@ class BookController extends Controller
         return view('books.create');
     }
 
-    public function store(Request $request) {
+    public function store(BookRequest $request) {
         $path = $request->file('file')
             ->storeAs('books', uuid_create() . '.pdf');
 
-        //TODO: MAKE THE BOOKANALYZER WORK IN A QUEUE
-        $response = (new BookAnalyzer)->prompt(
-            'Analyze this attached book and extract its metadata',
-            attachments: [
-                $request->file('file')
-            ]
+        ExtractBookMetadata::dispatch(
+            new BookAnalyzer(),
+            Auth::user(),
+            $path
         );
 
-        return $response;
+        return back()->with('success', 'Your book is being processed.');
     }
 }

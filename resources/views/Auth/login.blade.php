@@ -20,6 +20,7 @@
             <x-Forms.input label="Password" id="password" name="password" type="password"></x-Forms.input>
             @error('password') <p class="text-sm font-semibold text-red-600">{{ $message }}</p>  @enderror
             @error('msg') <p class="text-sm font-semibold text-red-600">{{ $message }}</p>  @enderror
+            <p class="text-end text-sm">You don't have an account yet? <a class="text-blue-800" href="/register">Register</a></p>
         </div>
         <x-Forms.button type="submit" class="bg-blue-500 py-2 px-1 text-white font-semibold rounded-sm" text="Login"></x-Forms.button>
     </form>

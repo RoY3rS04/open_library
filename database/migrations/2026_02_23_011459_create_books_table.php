@@ -18,17 +18,17 @@ return new class extends Migration
         Schema::create('books', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(User::class, 'submitted_by')->constrained();
-            $table->foreignIdFor(User::class, 'approved_by')->constrained();
-            $table->foreignIdFor(Author::class)->constrained();
-            $table->foreignIdFor(Category::class)->constrained();
+            $table->foreignIdFor(User::class, 'approved_by')->nullable()->constrained();
             $table->string('title');
             $table->enum('status', BookStatus::cases());
-            $table->string('isbn')->index()->unique();
-            $table->integer('edition');
+            $table->string('isbn')->index()->unique()->nullable();
+            $table->string('edition');
             $table->date('release_date');
             $table->integer('pages');
             $table->string('pdf_path');
             $table->text('synopsis');
+            $table->string('publisher');
+            $table->string('language');
             $table->timestamps();
         });
     }
@@ -38,6 +38,8 @@ return new class extends Migration
      */
     public function down(): void
     {
+        Schema::dropIfExists('author_book');
+        Schema::dropIfExists('category_book');
         Schema::dropIfExists('books');
     }
 };
