@@ -9,12 +9,13 @@ use App\Models\Book;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class BookController extends Controller
 {
     public function index(): View {
         return view('Books.index', [
-            'books' => Auth::user()->books
+            'books' => Auth::user()->submittedBooks
         ]);
     }
 
@@ -47,5 +48,9 @@ class BookController extends Controller
             'book' => $book
         ]);
 
+    }
+
+    public function download(Book $book): BinaryFileResponse {
+        return response()->download($book->pdf_path);
     }
 }

@@ -17,7 +17,7 @@
 <body class="h-screen">
     <div class="h-full grid grid-cols-5 min-h-0">
         <x-navigation class="border-r border-gray-300"></x-navigation>
-        <main class="col-start-2 -col-end-1 p-10 flex flex-col min-h-0">
+        <main class="col-start-2 -col-end-1 p-10 flex flex-col space-y-5 min-h-0">
             <header class="flex items-center justify-between">
                 <h1 class="text-2xl">{{ $heading }}</h1>
                 {{ $action }}

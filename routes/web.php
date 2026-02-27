@@ -21,6 +21,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/books', [BookController::class, 'index']);
     Route::post('/books', [BookController::class, 'store']);
     Route::get('/books/{book}', [BookController::class, 'show']);
+    Route::get('/books/{book}/download', [BookController::class, 'download']);
 
     Route::delete('/logout', [AuthController::class, 'logout'])->name('logout');
 });
