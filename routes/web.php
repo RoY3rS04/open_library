@@ -20,6 +20,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/books/create', [BookController::class, 'create']);
     Route::get('/books', [BookController::class, 'index']);
     Route::post('/books', [BookController::class, 'store']);
+    Route::get('/books/top', [BookController::class, 'top']);
     Route::get('/books/{book}', [BookController::class, 'show']);
     Route::get('/books/{book}/download', [BookController::class, 'download']);
 

@@ -51,6 +51,22 @@ class BookController extends Controller
     }
 
     public function download(Book $book): BinaryFileResponse {
+
+        $book->downloads++;
+        $book->save();
+
         return response()->download($book->pdf_path);
+    }
+
+    public function top(): View {
+
+        $topBooks = Book::query()
+            ->orderBy('downloads', 'desc')
+            ->limit(10)
+        ->get();
+
+        return view('Books.top', [
+            'books' => $topBooks
+        ]);
     }
 }

@@ -7,7 +7,7 @@
     @vite('resources/css/app.css')
 </head>
 <body class="h-screen flex items-center">
-<div class="w-2xl shadow mx-auto p-6">
+<div class="w-2xl shadow-2xl mx-auto p-6">
     <header class="flex flex-col items-center">
         <x-icons.logo class="size-15"></x-icons.logo>
         <h1 class="font-bold text-2xl">Open Library</h1>

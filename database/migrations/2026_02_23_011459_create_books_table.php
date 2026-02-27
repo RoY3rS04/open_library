@@ -22,6 +22,7 @@ return new class extends Migration
             $table->string('title');
             $table->enum('status', BookStatus::cases());
             $table->string('isbn')->index()->unique()->nullable();
+            $table->integer('downloads')->default(0);
             $table->string('edition');
             $table->date('release_date');
             $table->integer('pages');
