@@ -1,4 +1,21 @@
 services:
+  app:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    container_name: open_library_app
+    ports:
+      - "8000:8000"
+      - "5173:5173"
+    volumes:
+      - ./config/uploads.ini:/usr/local/etc/php/conf.d/uploads.ini
+      - .:/var/www
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - laravel
+
   postgres:
     image: postgres:18
     container_name: openlibrarydb
@@ -10,12 +27,19 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql
+    networks:
+      - laravel
 
   redis:
     image: redis:7
     container_name: openlibraryredis
     ports:
       - "6379:6379"
+    networks:
+      - laravel
 
 volumes:
   postgres_data:
+
+networks:
+  laravel:

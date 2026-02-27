@@ -13,13 +13,13 @@ use Illuminate\View\View;
 class BookController extends Controller
 {
     public function index(): View {
-        return view('books.index', [
+        return view('Books.index', [
             'books' => Auth::user()->books
         ]);
     }
 
     public function create(): View {
-        return view('books.create');
+        return view('Books.create');
     }
 
     public function store(BookRequest $request) {
@@ -43,7 +43,7 @@ class BookController extends Controller
             'media'
         ]);
 
-        return view('books.show', [
+        return view('Books.show', [
             'book' => $book
         ]);
 
