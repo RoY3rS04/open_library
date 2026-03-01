@@ -22,7 +22,7 @@
                 <form action="/logout" method="POST" class="flex gap-x-3">
                     @csrf
                     @method('DELETE')
-                    <x-Forms.button class="flex gap-x-2" type="submit" text="Logout">
+                    <x-Forms.button class="flex gap-x-2 border-none" type="submit" text="Logout">
                         <x-icons.logout></x-icons.logout>
                     </x-Forms.button>
                 </form>

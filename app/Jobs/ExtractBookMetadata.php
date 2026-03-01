@@ -71,7 +71,7 @@ class ExtractBookMetadata implements ShouldQueue
 
         $data = $response->toArray();
 
-        DB::transaction(function () use ($data, $pdfPath) {
+        DB::transaction(function () use ($data, $pdfPath, $outputPath) {
 
             $authorIds = collect($data['authors'])
                 ->map(function ($author) {
@@ -105,7 +105,7 @@ class ExtractBookMetadata implements ShouldQueue
             $book->authors()->sync($authorIds);
             $book->categories()->sync($categoryIds);
 
-            ExtractBookCover::dispatch($book, $pdfPath)
+            ExtractBookCover::dispatch($book, $outputPath)
                 ->afterCommit();
         });
     }

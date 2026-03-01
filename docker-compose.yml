@@ -4,6 +4,7 @@ services:
       context: .
       dockerfile: docker/Dockerfile
     container_name: open_library_app
+    user: "1000:1000"
     ports:
       - "8000:8000"
       - "5173:5173"

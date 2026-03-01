@@ -2,10 +2,10 @@
 
 <div class="flex flex-col h-75 overflow-hidden rounded-3xl border-2 border-black">
     <div class="w-full h-full flex-1 min-h-0 flex gap-x-4">
-        <div class="w-full flex flex-col p-4 space-y-2">
+        <div class="flex-5 w-full flex flex-col p-4 space-y-2 overflow-scroll">
             <div class="flex justify-between items-center">
                 <h2 class="font-bold text-xl">
-                    <a href="/books/{{ $book->id }}">{{ $book->title}}</a>
+                    <a href="/books/{{ $book->id }}">{{ $book->title }}</a>
                 </h2>
             </div>
             <div class="flex justify-between items-start">
@@ -17,21 +17,25 @@
                             Author
                         @endif
                     </p>
-                    @foreach($book->authors as $author)
-                        <span class="text-xs italic block">{{ $author->first_name . ' ' . $author->last_name }}</span>
-                    @endforeach
+                    <span class="text-xs italic block">
+                        {{
+                            $book->authors->map(fn ($author) => $author->first_name . ' ' . $author->last_name)
+                                ->implode(', ')
+                        }}
+                    </span>
+
                 </div>
             </div>
             <div class="space-y-2">
                 <p class="text-sm font-medium">Categories</p>
                 <div class="space-y-1">
                     @foreach($book->categories as $category)
-                        <span class="text-xs py-1 px-2 border border-black rounded-sm inline-block">{{ $category->name }}</span>
+                        <span class="text-[10px] py-1 px-2 border border-black rounded-sm inline-block">{{ $category->name }}</span>
                     @endforeach
                 </div>
             </div>
         </div>
-        <div class="w-full h-full overflow-hidden border-l-2 border-black">
+        <div class="flex-4 w-full h-full overflow-hidden border-l-2 border-black">
             <img class="w-full h-full object-cover object-center" src="{{ $book->getFirstMediaUrl('covers') }}" alt="Book Cover">
         </div>
     </div>
@@ -57,7 +61,7 @@
                 <span class="text-xs absolute top-2 left-2">
                     <x-icons.download></x-icons.download>
                 </span>
-                <span class="text-sm text-end">{{ $book->downloads ?? 1000 }}</span>
+                <span class="text-sm text-end">{{ $book->downloads ?? 0 }}</span>
             </a>
         </div>
     </div>

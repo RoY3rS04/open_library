@@ -20,7 +20,7 @@ class BookAnalyzer implements Agent, Conversational, HasTools, HasStructuredOutp
      */
     public function instructions(): Stringable|string
     {
-        return 'You are an expert in the art of extracting metadata from pdf books';
+        return 'You are an expert in the art of extracting metadata from pdf books, limit yourself to just one name and last_name for the author names, for categories add 3 as maximum';
     }
 
     /**
