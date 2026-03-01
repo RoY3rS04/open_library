@@ -1,4 +1,4 @@
-@php use App\Enums\BookStatus; @endphp
+@php use App\Enums\BookStatus;use App\Enums\NotificationType; @endphp
 <x-layout title="Submitted Books" heading="Your submitted books">
     <x-slot:files>
         @vite(['resources/js/book_status_filter.js'])
@@ -18,4 +18,9 @@
         @endforeach
         {{ $books->links() }}
     </div>
+    <x-notification title="Your book has been processed" :type="NotificationType::Success">
+        <span>
+            <a class="p-2 text-sm border-current border-2 inline-flex" href="/">Review it</a>
+        </span>
+    </x-notification>
 </x-layout>

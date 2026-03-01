@@ -8,6 +8,7 @@ services:
     ports:
       - "8000:8000"
       - "5173:5173"
+      - "8080:8080"
     volumes:
       - ./config/uploads.ini:/usr/local/etc/php/conf.d/uploads.ini
       - .:/var/www

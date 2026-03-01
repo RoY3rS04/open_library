@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Ai\Agents\BookAnalyzer;
 use App\Enums\BookStatus;
+use App\Events\BookCreated;
+use App\Events\BookMetadataExtracted;
 use App\Http\Requests\Books\BookRequest;
 use App\Http\Requests\UpdateBookMetadataRequest;
 use App\Jobs\ExtractBookMetadata;
@@ -49,6 +51,7 @@ class BookController extends Controller
     }
 
     public function store(BookRequest $request) {
+
         $path = $request->file('file')
             ->storeAs('books', uuid_create() . '.pdf');
 
@@ -58,7 +61,7 @@ class BookController extends Controller
             $path
         );
 
-        return back()->with('success', 'Your book is being processed.');
+        return redirect('/books')->with('success', 'Your book is being processed.');
     }
 
     public function show(Book $book): View {

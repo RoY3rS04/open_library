@@ -15,7 +15,7 @@ RUN apt-get update && apt-get install -y \
     zlib1g-dev \
     libpq-dev \
     libicu-dev \
-    && docker-php-ext-install pdo pdo_pgsql zip gd mbstring bcmath xml curl exif fileinfo intl \
+    && docker-php-ext-install pdo pdo_pgsql zip gd mbstring bcmath xml curl pcntl exif fileinfo intl \
     && pecl install imagick \
     && pecl install redis \
     && docker-php-ext-enable imagick redis

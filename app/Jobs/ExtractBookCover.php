@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Events\BookMetadataExtracted;
 use App\Models\Book;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
@@ -47,5 +48,7 @@ class ExtractBookCover implements ShouldQueue
         $image->writeImage($imagePath);
 
         $this->book->addMedia($imagePath)->toMediaCollection('covers');
+
+        BookMetadataExtracted::dispatch($this->book);
     }
 }

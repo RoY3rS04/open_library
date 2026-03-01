@@ -4,6 +4,7 @@ namespace App\Jobs;
 
 use App\Ai\Agents\BookAnalyzer;
 use App\Enums\BookStatus;
+use App\Events\BookCreated;
 use App\Models\Author;
 use App\Models\Book;
 use App\Models\Category;
@@ -101,6 +102,8 @@ class ExtractBookMetadata implements ShouldQueue
                 'synopsis' => $data['synopsis'],
                 'publisher' => $data['publisher'],
             ]);
+
+            BookCreated::dispatch($book);
 
             $book->authors()->sync($authorIds);
             $book->categories()->sync($categoryIds);

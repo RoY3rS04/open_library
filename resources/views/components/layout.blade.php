@@ -11,10 +11,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{ $title }}</title>
-    @vite(['resources/css/app.css', 'resources/js/dom.js'])
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
     @if($files) {{ $files }} @endif
 </head>
 <body class="h-screen">
+    <span class="hidden" id="user_id" data-user-id="{{ auth()->id() }}"></span>
     <div class="h-full grid grid-cols-5 min-h-0">
         <x-navigation class="border-r border-gray-300"></x-navigation>
         <main class="col-start-2 -col-end-1 p-10 flex flex-col space-y-5 min-h-0">
