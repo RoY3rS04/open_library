@@ -13,7 +13,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{ $title }}</title>
-    @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/js/dom.js'])
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
     @if($files)
         {{ $files }}
     @endif
@@ -30,12 +30,17 @@
         <article class="flex-1 min-h-0 overflow-auto">{{ $slot }}</article>
     </main>
 </div>
-<div class="absolute space-y-2 bottom-0 right-0 min-w-80 p-3 z-10">
+<div id="notifications" class="absolute space-y-2 bottom-0 right-0 min-w-80 p-3 z-10">
     @if($notification)
         <x-notification uuid="{{ $notification['id'] }}" title="{{ $notification['title'] }}" :type="$notification['type']">
-            @if(key_exists('action', $notification))
-                <a href="{{ $notification['action'] }}">sup</a>
-            @endif
+            <div class="space-y-2">
+                @if(key_exists('msg', $notification))
+                    <p class="text-sx text-current">{{ $notification['msg'] }}</p>
+                @endif
+                @if(key_exists('action', $notification))
+                    <a class="border-2 border-current p-2" href="{{ $notification['action'] }}">sup</a>
+                @endif
+            </div>
         </x-notification>
     @endif
 </div>

@@ -20,7 +20,7 @@ class BookAnalyzer implements Agent, Conversational, HasTools, HasStructuredOutp
      */
     public function instructions(): Stringable|string
     {
-        return 'You are an expert in the art of extracting metadata from pdf books, limit yourself to just one name and last_name for the author names, for categories add 3 as maximum';
+        return 'You are an expert in the art of extracting metadata from pdf books, limit yourself to just one name and last_name for the author names, for categories add 3 as maximum, ensure the book title is composed of words';
     }
 
     /**
@@ -65,7 +65,7 @@ class BookAnalyzer implements Agent, Conversational, HasTools, HasStructuredOutp
                 ->items($schema->string()->max(20))
                 ->required(),
             'synopsis' => $schema->string()->required(),
-            'edition' => $schema->string()->required(),
+            'edition' => $schema->integer()->required(),
         ];
     }
 }

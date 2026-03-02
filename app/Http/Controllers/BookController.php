@@ -48,10 +48,13 @@ class BookController extends Controller
     }
 
     public function create(): View {
+
         return view('Books.create');
     }
 
     public function store(BookRequest $request) {
+
+        \Gate::authorize('create', Book::class);
 
         $path = $request->file('file')
             ->storeAs('books', uuid_create() . '.pdf');
@@ -71,6 +74,8 @@ class BookController extends Controller
 
     public function show(Book $book): View {
 
+        \Gate::authorize('view', $book);
+
         $book->load([
             'authors',
             'categories',
@@ -84,12 +89,17 @@ class BookController extends Controller
     }
 
     public function edit(Book $book): View {
+
+        \Gate::authorize('view', $book);
+
         return view('Books.edit', [
             'book' => $book
         ]);
     }
 
     public function update(UpdateBookMetadataRequest $request, Book $book): RedirectResponse {
+
+        \Gate::authorize('update', $book);
 
         $validated = $request->validated();
 

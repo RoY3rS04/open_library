@@ -3,7 +3,6 @@
 namespace App\Events;
 
 use App\Enums\NotificationType;
-use App\Models\Book;
 use App\Models\User;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
@@ -13,14 +12,19 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class BookMetadataExtracted implements ShouldBroadcast
+class BookMetadataExtractionFailed implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     /**
      * Create a new event instance.
      */
-    public function __construct(public Book $book)
+    public function __construct(
+        public User $user,
+        public string $msg,
+        public ?string $action_url = null,
+        public ?string $action_desc = null,
+    )
     {
         //
     }
@@ -33,17 +37,18 @@ class BookMetadataExtracted implements ShouldBroadcast
     public function broadcastOn(): array
     {
         return [
-            new PrivateChannel('books.' . $this->book->id),
+            new PrivateChannel('users.' . $this->user->id),
         ];
     }
 
     public function broadcastWith(): array {
         return [
-            'type' => NotificationType::Success,
-            'title' => 'Your book has been processed',
+            'type' => NotificationType::Error,
+            'title' => 'An error occurred while processing your book',
             'id' => uuid_create(),
-            'action_url' => env('APP_URL') . '/books/' . $this->book->id,
-            'action_desc' => 'Review it'
+            'msg' => $this->msg,
+            'action_url' => $this->action_url,
+            'action_desc' => $this->action_desc,
         ];
     }
 }

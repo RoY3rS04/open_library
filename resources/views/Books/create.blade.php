@@ -3,13 +3,12 @@
         @vite(['resources/js/drag_drop.js'])
     </x-slot:files>
     <x-slot:action>
-        <x-Forms.button disabled={{true}} form="upload-book" class="inline py-2 px-4 border-2 border-gray-900 submitBtn"></x-Forms.button>
+        <x-Forms.button form="upload-book" class="inline py-2 px-4 border-2 border-gray-900 submitBtn"></x-Forms.button>
     </x-slot:action>
     @if($errors->count())
         {{dd($errors->all())}}
     @endif
     <div class="h-full">
-
         <div id="target" class="h-full  border-gray-500 border-2 border-dashed flex items-center justify-center relative">
             <label for="file" class="absolute top-0 left-0 right-0 bottom-0 cursor-pointer"></label>
             <h2 class="text-3xl text-center mx-1 target__heading">Drag and drop your PDF file here</h2>

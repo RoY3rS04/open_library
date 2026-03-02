@@ -5,6 +5,7 @@ namespace App\Jobs;
 use App\Ai\Agents\BookAnalyzer;
 use App\Enums\BookStatus;
 use App\Events\BookCreated;
+use App\Events\BookMetadataExtractionFailed;
 use App\Models\Author;
 use App\Models\Book;
 use App\Models\Category;
@@ -59,57 +60,80 @@ class ExtractBookMetadata implements ShouldQueue
         $process->run();
 
         if (!$process->isSuccessful()) {
-            throw new \Exception($process->getErrorOutput());
+            \Storage::disk('local')->delete($this->filePath);
+            return;
         }
 
-        $response = $this->bookAnalyzer->prompt(
-            'Analyze this attached book and extract its metadata',
-            attachments: [
-                Document::fromPath($outputPath)
-            ],
-            model: 'gemini-2.5-flash'
-        );
+        try {
+            $response = $this->bookAnalyzer->prompt(
+                'Analyze this attached book and extract its metadata',
+                attachments: [
+                    Document::fromPath($outputPath)
+                ],
+                model: 'gemini-2.5-flash'
+            );
+            $data = $response->toArray();
+            DB::transaction(function () use ($data, $pdfPath, $outputPath) {
 
-        $data = $response->toArray();
+                $book = $this->user->submittedBooks()->firstOrCreate([
+                    'title' => strtolower($data['title']),
+                    'isbn' => $data['isbn'] ?? null,
+                    'edition' => $data['edition'],
+                ], [
+                    'pages' => $data['pages'],
+                    'status' => BookStatus::Draft->value,
+                    'release_date' => Date::parse($data['release_date']),
+                    'language' => $data['language'],
+                    'pdf_path' => $pdfPath,
+                    'synopsis' => $data['synopsis'],
+                    'publisher' => $data['publisher'],
+                ]);
 
-        DB::transaction(function () use ($data, $pdfPath, $outputPath) {
+                if (!$book->wasRecentlyCreated) {
+                    DB::rollBack();
+                    \Storage::delete($pdfPath);
+                    \Storage::delete($outputPath);
+                    BookMetadataExtractionFailed::dispatch(
+                        $this->user,
+                        'Book already exists',
+                        env('APP_URL') . '/books/' . $book->id,
+                        'Show'
+                    );
+                    return;
+                }
 
-            $authorIds = collect($data['authors'])
-                ->map(function ($author) {
-                    return Author::firstOrCreate([
-                        'first_name' => $author['first_name'],
-                        'last_name' => $author['last_name'],
-                    ])->id;
-                });
+                BookCreated::dispatch($book);
+                $authorIds = collect($data['authors'])
+                    ->map(function ($author) {
+                        return Author::firstOrCreate([
+                            'first_name' => $author['first_name'],
+                            'last_name' => $author['last_name'],
+                        ])->id;
+                    });
 
-            $categoryIds = collect($data['categories'])
-                ->map(function ($category) {
-                    return Category::firstOrCreate([
-                        'name' => $category,
-                    ])->id;
-                });
+                $categoryIds = collect($data['categories'])
+                    ->map(function ($category) {
+                        return Category::firstOrCreate([
+                            'name' => $category,
+                        ])->id;
+                    });
 
-            $book = $this->user->submittedBooks()->firstOrCreate([
-                'title' => $data['title'],
-                'isbn' => $data['isbn'] ?? null,
-                'edition' => $data['edition'],
-            ],[
-                'pages' => $data['pages'],
-                'status' => BookStatus::Draft->value,
-                'release_date' => Date::parse($data['release_date']),
-                'language' => $data['language'],
-                'pdf_path' => $pdfPath,
-                'synopsis' => $data['synopsis'],
-                'publisher' => $data['publisher'],
-            ]);
+                $book->authors()->sync($authorIds);
+                $book->categories()->sync($categoryIds);
 
-            BookCreated::dispatch($book);
-
-            $book->authors()->sync($authorIds);
-            $book->categories()->sync($categoryIds);
-
-            ExtractBookCover::dispatch($book, $outputPath)
-                ->afterCommit();
-        });
+                ExtractBookCover::dispatch($book, $outputPath)
+                    ->afterCommit();
+            });
+        } catch (\Throwable $e) {
+            Log::info($e->getMessage());
+            Log::info(\File::delete($pdfPath));
+            Log::info($pdfPath);
+            Log::info(\File::delete($outputPath));
+            Log::info($outputPath);
+            BookMetadataExtractionFailed::dispatch(
+                $this->user,
+                'Something went wrong',
+            );
+        }
     }
 }
