@@ -1,9 +1,9 @@
-/*
-let navBtn = document.querySelector('.nav-btn');
-let navContainer = document.querySelector('.nav-container');
+const notificationCloseBtns = document.querySelectorAll('.close-notification');
 
-navBtn.addEventListener('click', function (e) {
-    navContainer.width = 0;
-    navBtn.classList.add('hidden');
-});
-*/
+notificationCloseBtns.forEach((el) => {
+    el.addEventListener('click', (e) => {
+        const parent = document.querySelector(`[data-uuid="${e.target.dataset.uuid}"]`);
+
+        parent.remove();
+    })
+})

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Ai\Agents\BookAnalyzer;
 use App\Enums\BookStatus;
+use App\Enums\NotificationType;
 use App\Events\BookCreated;
 use App\Events\BookMetadataExtracted;
 use App\Http\Requests\Books\BookRequest;
@@ -61,7 +62,11 @@ class BookController extends Controller
             $path
         );
 
-        return redirect('/books')->with('success', 'Your book is being processed.');
+        return redirect('/books')->with('notification', [
+            'type' => NotificationType::Information,
+            'title' => 'Your book is being processed',
+            'id' => uuid_create()
+        ]);
     }
 
     public function show(Book $book): View {
