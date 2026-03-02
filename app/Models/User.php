@@ -27,6 +27,8 @@ class User extends Authenticatable implements MustVerifyEmail
         'username',
         'email',
         'password',
+        'role',
+        'telegram_chat_id'
     ];
 
     /**
@@ -72,5 +74,9 @@ class User extends Authenticatable implements MustVerifyEmail
         );
 
         Mail::to($this->email)->queue(new ConfirmEmail($this, $url));
+    }
+
+    public function routeNotificationForTelegram() {
+        return $this->telegram_chat_id;
     }
 }

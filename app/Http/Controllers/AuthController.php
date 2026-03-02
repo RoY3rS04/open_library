@@ -63,4 +63,8 @@ class AuthController extends Controller
 
         return redirect('/login');
     }
+
+    public function settings(): View {
+        return view('Auth.settings');
+    }
 }

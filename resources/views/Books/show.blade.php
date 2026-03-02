@@ -38,11 +38,23 @@
                     <p>{{ $book->isbn === 'null' ? '': $book->isbn }}</p>
                 </div>
                 <div class="flex items-center mt-10 justify-between">
-                    <a href="/books/{{ $book->id }}/edit" class="py-2 px-4 border-2 border-black">Edit</a>
-                    <form action="/books/send" method="POST">
-                        @csrf
-                        <button class="cursor-pointer py-2 px-4 border-2 border-black">Send for Approval</button>
-                    </form>
+                    @can('edit', $book)
+                        <a href="/books/{{ $book->id }}/edit" class="py-2 px-4 border-2 border-black">Edit</a>
+                        <form action="/books/{{ $book->id }}/request-approval" method="POST">
+                            @csrf
+                            <button class="cursor-pointer py-2 px-4 border-2 border-black">Send for Approval</button>
+                        </form>
+                    @endcan
+                    @can('approve', $book)
+                            <form action="/books/{{ $book->id }}/reject" method="POST">
+                                @csrf
+                                <button class="cursor-pointer py-2 px-4 border-2 border-black">Reject</button>
+                            </form>
+                            <form action="/books/{{ $book->id }}/approve" method="POST">
+                                @csrf
+                                <button class="cursor-pointer py-2 px-4 border-2 border-black">Approve</button>
+                            </form>
+                        @endcan
                 </div>
             </div>
         </div>

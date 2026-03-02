@@ -1,3 +1,4 @@
+@php use App\Models\Book; @endphp
 <aside {{ $attributes->merge(['class' => 'h-full px-4 py-8 relative nav-container']) }}>
     <nav class="flex flex-col h-full">
         <x-navigation_item class="font-bold text-xl" link="/" link_title="OpenLibrary">
@@ -13,6 +14,11 @@
             <x-navigation_item link="/books" link_title="Submitted Books">
                 <x-icons.archive class="size-6"></x-icons.archive>
             </x-navigation_item>
+            @can('approve', Book::class)
+                <x-navigation_item link="/books/submissions" link_title="Book Submissions">
+                    <x-icons.submissions class="size-6"></x-icons.submissions>
+                </x-navigation_item>
+            @endcan
         </div>
         <div class="space-y-6">
             <x-navigation_item link="/user/settings" link_title="Settings">

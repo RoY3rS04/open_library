@@ -54,7 +54,7 @@ class BookController extends Controller
 
     public function store(BookRequest $request) {
 
-        \Gate::authorize('create', Book::class);
+        \Gate::allows('create', Book::class);
 
         $path = $request->file('file')
             ->storeAs('books', uuid_create() . '.pdf');
@@ -164,6 +164,27 @@ class BookController extends Controller
 
         return view('Books.top', [
             'books' => $topBooks
+        ]);
+    }
+
+    public function submissions(): View {
+        \Gate::authorize('approve', Book::class);
+
+        return view('Books.submissions', [
+            'books' => Book::where('status', BookStatus::Pending)->paginate(10)
+        ]);
+    }
+
+    public function requestApproval(Book $book)
+    {
+        $book->status = BookStatus::Pending;
+        $book->save();
+
+        //TODO SEND BookSubmission Event
+        return back()->with('notification', [
+            'type' => NotificationType::Information,
+            'title' => 'Your book is awaiting approval',
+            'id' => uuid_create()
         ]);
     }
 }

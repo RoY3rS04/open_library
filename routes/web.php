@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BookController;
+use App\Http\Controllers\TelegramWebhookController;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -21,11 +22,14 @@ Route::middleware('auth')->group(function () {
     Route::get('/books', [BookController::class, 'index']);
     Route::post('/books', [BookController::class, 'store']);
     Route::get('/books/top', [BookController::class, 'top']);
+    Route::get('/books/submissions', [BookController::class, 'submissions']);
     Route::get('/books/{book}', [BookController::class, 'show']);
     Route::get('/books/{book}/edit', [BookController::class, 'edit']);
     Route::patch('/books/{book}', [BookController::class, 'update']);
     Route::get('/books/{book}/download', [BookController::class, 'download']);
+    Route::post('/books/{book}/request-approval', [BookController::class, 'requestApproval']);
 
+    Route::get('/settings', [AuthController::class, 'settings']);
     Route::delete('/logout', [AuthController::class, 'logout'])->name('logout');
 });
 

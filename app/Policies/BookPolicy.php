@@ -18,6 +18,10 @@ class BookPolicy
         return $user->role === UserRole::Admin->value;
     }
 
+    public function approve(User $user): bool {
+        return $user->role === UserRole::Admin->value;
+    }
+
     /**
      * Determine whether the user can view the model.
      */
@@ -48,7 +52,8 @@ class BookPolicy
      */
     public function delete(User $user, Book $book): bool
     {
-        return false;
+        return $user->role === UserRole::Admin->value ||
+            $book->submitted_by === $user->id;
     }
 
     /**
