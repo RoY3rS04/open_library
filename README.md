@@ -54,6 +54,12 @@ php artisan reverb:start
 npm run dev
 ```
 
+#### Restart 
+```bash
+docker compose stop open_library_app
+docker compose start open_library_app
+```
+
 In order to approve or reject books you need an admin user, to get one run this command in the bash terminal inside the docker image:
 ```bash
 php artisan app:create-admin-user
