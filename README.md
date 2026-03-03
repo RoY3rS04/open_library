@@ -13,6 +13,7 @@
 
 ```bash
 # Generate the docker image
+cd open_library
 docker compose build
 docker compose up -d
 ```
