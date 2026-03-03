@@ -40,14 +40,17 @@ php artisan migrate
 #### Start the app
 
 ```bash 
-# Start 3 different bash inside the docker image "docker exec -it open_library_app bash"
+# Start 4 different bash inside the docker image "docker exec -it open_library_app bash"
 # In the first bash run 
-php artisan queue:work
+php artisan serve
 
 # In the second bash run 
-php artisan reverb:start
+php artisan queue:work
 
 # In the third bash run 
+php artisan reverb:start
+
+# In the fourth bash run 
 npm run dev
 ```
 
