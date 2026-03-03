@@ -18,6 +18,12 @@ docker compose up -d
 ```
 
 #### Migrations and .env
+
+```bash
+# Copy environment variables
+cp .env.example .env
+```
+
 ```bash
 # Get in the docker image bash
 docker exec -it open_library_app bash
@@ -29,8 +35,6 @@ php artisan key:generate
 # Run migrations
 php artisan migrate
 ```
-
-.example.env is copied when you build the docker image, just make sure to replace the values of Reverb, Gemini and Mail.
 
 #### Start the app
 
