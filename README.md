@@ -3,10 +3,13 @@
 
 ### Requirements
 
-- docker desktop or docker engine
+- Docker desktop or docker engine
+- A gemini api key
+- A mailtrap user
 
 ### Steps
 
+#### Start the docker image
 
 ```bash
 # Generate the docker image
@@ -14,6 +17,7 @@ docker compose build
 docker compose up -d
 ```
 
+#### Migrations and .env
 ```bash
 # Get in the docker image bash
 docker exec -it open_library_app bash
@@ -22,7 +26,13 @@ docker exec -it open_library_app bash
 ```bash 
 # Generate laravel key
 php artisan key:generate
+# Run migrations
+php artisan migrate
 ```
+
+.example.env is copied when you build the docker image, just make sure to replace the values of Reverb, Gemini and Mail.
+
+#### Start the app
 
 ```bash 
 # Start 3 different bash inside the docker image "docker exec -it open_library_app bash"

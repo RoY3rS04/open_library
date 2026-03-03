@@ -11,6 +11,8 @@ services:
     volumes:
       - ./config/uploads.ini:/usr/local/etc/php/conf.d/uploads.ini
       - .:/var/www
+      - /var/www/vendor
+      - /var/www/node_modules
     depends_on:
       - postgres
       - redis
