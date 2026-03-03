@@ -1,3 +1,4 @@
+@php use App\Enums\BookStatus; @endphp
 <x-layout title="{{$book->title}}" heading="{!! $book->title !!}">
     <section class="h-full flex items-center gap-x-5 min-h-0">
         <div class="flex-3 h-full min-h-0">
@@ -40,21 +41,26 @@
                 <div class="flex items-center mt-10 justify-between">
                     @can('edit', $book)
                         <a href="/books/{{ $book->id }}/edit" class="py-2 px-4 border-2 border-black">Edit</a>
-                        <form action="/books/{{ $book->id }}/request-approval" method="POST">
-                            @csrf
-                            <button class="cursor-pointer py-2 px-4 border-2 border-black">Send for Approval</button>
-                        </form>
+                        @if($book->status === BookStatus::Draft->value)
+                            <form action="/books/{{ $book->id }}/request-approval" method="POST">
+                                @csrf
+                                <button class="cursor-pointer py-2 px-4 border-2 border-black">Send for Approval
+                                </button>
+                            </form>
+                        @endif
                     @endcan
                     @can('approve', $book)
-                            <form action="/books/{{ $book->id }}/reject" method="POST">
-                                @csrf
-                                <button class="cursor-pointer py-2 px-4 border-2 border-black">Reject</button>
-                            </form>
-                            <form action="/books/{{ $book->id }}/approve" method="POST">
-                                @csrf
-                                <button class="cursor-pointer py-2 px-4 border-2 border-black">Approve</button>
-                            </form>
-                        @endcan
+                        @if($book->status === BookStatus::Pending->value)
+                                <form action="/books/{{ $book->id }}/reject" method="POST">
+                                    @csrf
+                                    <button class="cursor-pointer py-2 px-4 border-2 border-black">Reject</button>
+                                </form>
+                                <form action="/books/{{ $book->id }}/approve" method="POST">
+                                    @csrf
+                                    <button class="cursor-pointer py-2 px-4 border-2 border-black">Approve</button>
+                                </form>
+                        @endif
+                    @endcan
                 </div>
             </div>
         </div>

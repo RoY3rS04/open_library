@@ -1,23 +1,22 @@
 services:
-  app:
+  php:
     build:
       context: .
       dockerfile: docker/Dockerfile
-    container_name: open_library_app
     ports:
-      - "8000:8000"
-      - "5173:5173"
-      - "8080:8080"
+      - "80:8080"
+      - "443:8443"
     volumes:
-      - ./config/uploads.ini:/usr/local/etc/php/conf.d/uploads.ini
-      - .:/var/www
-      - /var/www/vendor
-      - /var/www/node_modules
+      - .:/var/www/html
+    environment:
+      AUTORUN_ENABLED: "true"
+      PHP_OPCACHE_ENABLE: "1"
+      PHP_UPLOAD_MAX_FILE_SIZE: "50M"
+      PHP_POST_MAX_SIZE: "60M"
+      PHP_MAX_EXECUTION_TIME: "180"
     depends_on:
       - postgres
       - redis
-    networks:
-      - laravel
 
   postgres:
     image: postgres:18
@@ -29,20 +28,53 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - postgres_data:/var/lib/postgresql
-    networks:
-      - laravel
+      - db_data:/var/lib/postgresql
 
   redis:
-    image: redis:7
-    container_name: openlibraryredis
+    image: redis:alpine
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_data:/data
+
+  queue:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    volumes:
+      - .:/var/www/html
+    command: [ "php", "/var/www/html/artisan", "queue:work", "--tries=3" ]
+    stop_signal: SIGTERM
+    healthcheck:
+      # This is our native healthcheck script for the queue
+      test: [ "CMD", "healthcheck-queue" ]
+      start_period: 10s
+
+  reverb:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    volumes:
+      - .:/var/www/html
+    command: [ "php", "/var/www/html/artisan", "reverb:start", "--port=8000" ]
     ports:
-      - "6379:6379"
-    networks:
-      - laravel
+      - "8000:8000"
+    stop_signal: SIGTERM
+    healthcheck:
+      test: [ "CMD", "healthcheck-reverb" ]
+      start_period: 10s
+
+  task:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    volumes:
+      - .:/var/www/html
+    command: [ "php", "/var/www/html/artisan", "schedule:work" ]
+    stop_signal: SIGTERM
+    healthcheck:
+      test: [ "CMD", "healthcheck-schedule" ]
+      start_period: 10s
 
 volumes:
-  postgres_data:
-
-networks:
-  laravel:
+  db_data:
+  redis_data:

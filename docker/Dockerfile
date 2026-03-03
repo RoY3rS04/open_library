@@ -1,37 +1,21 @@
-FROM php:8.5-cli
+FROM serversideup/php:8.5-fpm-nginx
 
+# Switch to root to install extensions
+USER root
+
+# Install qpdf and clean up to keep the image small
 RUN apt-get update && apt-get install -y \
-    git \
-    unzip \
-    libzip-dev \
-    libpng-dev \
-    libjpeg-dev \
-    libfreetype6-dev \
-    libmagickwand-dev \
-    ghostscript \
     qpdf \
-    libonig-dev  \
-    libcurl4-openssl-dev  \
-    zlib1g-dev \
-    libpq-dev \
-    libicu-dev \
-    && docker-php-ext-install pdo pdo_pgsql zip gd mbstring bcmath xml curl pcntl exif fileinfo intl \
-    && pecl install imagick \
-    && pecl install redis \
-    && docker-php-ext-enable imagick redis
+    ghostscript \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+# Install any PHP extension easily
+RUN install-php-extensions imagick exif
 
-RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - \
-    && apt-get install -y nodejs
+COPY . $APP_BASE_DIR
 
-WORKDIR /var/www
+RUN composer install --no-dev --no-scripts --optimize-autoloader
 
-COPY . .
-
-RUN echo "upload_max_filesize = 20M" >> /usr/local/etc/php/conf.d/uploads.ini \
-    && echo "post_max_size = 25M" >> /usr/local/etc/php/conf.d/uploads.ini
-
-RUN composer install && npm install
-
-CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]
+# Switch back to unprivileged user
+USER www-data
