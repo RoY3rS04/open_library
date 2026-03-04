@@ -11,6 +11,12 @@
 
 ### Steps
 
+### Get into working directory 
+
+```bash
+cd open_library
+```
+
 #### Install Dependencies
 
 ```bash
@@ -22,7 +28,6 @@ npm install
 
 ```bash
 # Generate the docker image
-cd open_library
 docker compose build
 ```
 
