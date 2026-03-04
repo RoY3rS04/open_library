@@ -26,6 +26,10 @@ class Book extends Model implements HasMedia
         'edition',
     ];
 
+    protected $hidden = [
+        'pdf_path',
+    ];
+
     public function authors(): BelongsToMany {
         return $this->belongsToMany(
             Author::class,

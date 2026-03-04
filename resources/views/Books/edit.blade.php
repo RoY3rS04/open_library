@@ -6,7 +6,7 @@
                         ->implode(', ');
 @endphp
 
-<x-layout title="Update Your Book">
+<x-layout title="Update Your Book" heading="{{ $book->title }}">
     <div class="flex gap-x-5">
         <div class="flex-2">
             <img src="{{ $book->getFirstMediaUrl('covers') }}" alt="Cover image">
@@ -25,7 +25,14 @@
                     <x-Forms.input name="language" label="Language" class="w-full" value="{{ $book->language }}"></x-Forms.input>
                     <x-Forms.input name="edition" label="Edition" class="w-full" value="{{ $book->edition }}"></x-Forms.input>
                 </div>
-                <button class="p-2 border-black border-2 w-full cursor-pointer">Update Book Metadata</button>
+                <div class="flex items-center gap-x-2">
+                    <button class="p-2 border-black border-2 cursor-pointer">Update Book Metadata</button>
+                    <button form="delete-book" class="p-2 border-2 border-black cursor-pointer">Delete Book</button>
+                </div>
+            </form>
+            <form id="delete-book" action="/books/{{ $book->id }}" method="POST">
+                @csrf
+                @method('DELETE')
             </form>
         </div>
     </div>

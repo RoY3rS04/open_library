@@ -5,14 +5,19 @@ const NOTIFICATION_SUCCESS = 1;
 const NOTIFICATION_ERROR = 2;
 const NOTIFICATION_INFORMATION = 3;
 
-const authEl = document.getElementById('user_id');
+const USER_ADMIN = 'admin';
+const USER_NORMAL = 'user';
+
+const authEl = document.getElementById('user_info');
 const authId = authEl.dataset.userId;
+const authRole = authEl.dataset.userRole;
 
 const notificationsContainer = document.getElementById('notifications');
 const notificationCloseBtns = getCloseNotificationBtns();
 
 registerClickOnCloseNotificationBtns(notificationCloseBtns);
 
+// REFACTOR Notifications
 echo.private(`users.${authId}`)
     .listen('BookCreated', (e) => {
         echo.private(`books.${e.book_id}`)
@@ -38,7 +43,33 @@ echo.private(`users.${authId}`)
         registerClickOnCloseNotificationBtns(
             getCloseNotificationBtns()
         );
+    })
+    .listen('BookProposalResult', (e) => {
+        notificationsContainer.innerHTML = '';
+
+        notificationsContainer.innerHTML = generateNotification(
+            e.type, e.id, e.title, e?.msg, e?.action_url, e?.action_desc
+        );
+
+        registerClickOnCloseNotificationBtns(
+            getCloseNotificationBtns()
+        );
     });
+
+if (authRole === USER_ADMIN) {
+    echo.private('users.admins.proposals')
+        .listen('NewBookProposal', (e) => {
+            notificationsContainer.innerHTML = '';
+
+            notificationsContainer.innerHTML = generateNotification(
+                e.type, e.id, e.title, e?.msg, e?.action_url, e?.action_desc
+            );
+
+            registerClickOnCloseNotificationBtns(
+                getCloseNotificationBtns()
+            );
+        })
+}
 
 function getCloseNotificationBtns() {
     return document.querySelectorAll('.close-notification');

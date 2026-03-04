@@ -7,6 +7,9 @@ use App\Enums\BookStatus;
 use App\Enums\NotificationType;
 use App\Events\BookCreated;
 use App\Events\BookMetadataExtracted;
+use App\Events\BookProposalResult;
+use App\Events\BookRejected;
+use App\Events\NewBookProposal;
 use App\Http\Requests\Books\BookRequest;
 use App\Http\Requests\UpdateBookMetadataRequest;
 use App\Jobs\ExtractBookMetadata;
@@ -90,7 +93,7 @@ class BookController extends Controller
 
     public function edit(Book $book): View {
 
-        \Gate::authorize('view', $book);
+        \Gate::authorize('update', $book);
 
         return view('Books.edit', [
             'book' => $book
@@ -144,7 +147,11 @@ class BookController extends Controller
             $book->categories()->sync($categoryIds);
         });
 
-        return redirect('books/' . $book->id)->with('success', 'Your book was updated.');
+        return redirect('books/' . $book->id)->with('notification', [
+            'type' => NotificationType::Information,
+            'title' => 'Your book was updated successfully',
+            'id' => uuid_create()
+        ]);
     }
 
     public function download(Book $book): BinaryFileResponse {
@@ -157,7 +164,7 @@ class BookController extends Controller
 
     public function top(): View {
 
-        $topBooks = Book::query()
+        $topBooks = Book::where('status', BookStatus::Approved->value)
             ->orderBy('downloads', 'desc')
             ->limit(10)
         ->get();
@@ -177,8 +184,12 @@ class BookController extends Controller
 
     public function requestApproval(Book $book)
     {
+        \Gate::authorize('update', $book);
+
         $book->status = BookStatus::Pending;
         $book->save();
+
+        NewBookProposal::dispatch($book);
 
         //TODO SEND BookSubmission Event
         return back()->with('notification', [
@@ -188,15 +199,57 @@ class BookController extends Controller
         ]);
     }
 
-    public function approve(Book $book)
+    public function approve(Book $book): RedirectResponse
     {
+        \Gate::authorize('approve', $book);
+
         $book->status = BookStatus::Approved;
+        $book->approvedBy()->associate(Auth::user());
         $book->save();
 
+        BookProposalResult::dispatch($book, BookStatus::Approved);
+
         return back()->with('notification', [
-            'type' => NotificationType::Information,
+            'type' => NotificationType::Success,
             'title' => 'Book approved successfully',
             'id' => uuid_create()
+        ]);
+    }
+
+    public function reject(Book $book): RedirectResponse {
+        \Gate::authorize('approve', $book);
+
+        $book->status = BookStatus::Rejected;
+        $book->save();
+
+        BookProposalResult::dispatch($book, BookStatus::Rejected);
+
+        return redirect('/books/submissions')->with('notification', [
+            'type' => NotificationType::Success,
+            'title' => 'Book rejected successfully',
+            'id' => uuid_create()
+        ]);
+    }
+
+    public function destroy(Book $book): RedirectResponse {
+        \Gate::authorize('delete', $book);
+
+        $book->deleteAllMedia();
+        \File::delete($book->pdf_path);
+
+//        \Log::info('deleting file', [
+//            'deleted-pdf-file' => $deleted,
+//            'has-media-file' => $hasMedia
+//        ]);
+
+        $book->authors()->detach();
+        $book->categories()->detach();
+        $book->delete();
+
+        return redirect('/books')->with('notification', [
+           'type' => NotificationType::Success,
+           'title' => 'Book deleted successfully',
+           'id' => uuid_create()
         ]);
     }
 }

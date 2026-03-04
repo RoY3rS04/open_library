@@ -2,9 +2,9 @@
 
 namespace App\Events;
 
+use App\Enums\BookStatus;
 use App\Enums\NotificationType;
 use App\Models\Book;
-use App\Models\User;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PresenceChannel;
@@ -13,14 +13,14 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class BookMetadataExtracted implements ShouldBroadcast
+class BookProposalResult implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     /**
      * Create a new event instance.
      */
-    public function __construct(public Book $book)
+    public function __construct(public Book $book, public BookStatus $bookStatus)
     {
         //
     }
@@ -33,17 +33,20 @@ class BookMetadataExtracted implements ShouldBroadcast
     public function broadcastOn(): array
     {
         return [
-            new PrivateChannel('books.' . $this->book->id),
+            new PrivateChannel('users.' . $this->book->submitted_by)
         ];
     }
 
     public function broadcastWith(): array {
+
+        $type = $this->bookStatus->value === BookStatus::Approved->value ?
+            NotificationType::Success : NotificationType::Information;
+
         return [
-            'type' => NotificationType::Success,
-            'title' => 'Your book has been processed successfully',
-            'id' => uuid_create(),
-            'action_url' => env('APP_URL') . '/books/' . $this->book->id,
-            'action_desc' => 'Review it'
+            'type' => $type,
+            'title' => 'Your book proposal for ' . $this->book->title .  ' was ' . $this->bookStatus->value,
+            'id' => uuid_create()
         ];
     }
 }
+

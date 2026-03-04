@@ -49,6 +49,10 @@ class ExtractBookCover implements ShouldQueue
 
         $this->book->addMedia($imagePath)->toMediaCollection('covers');
 
+        $removed = File::delete($this->pdfPath);
+        \Log::info('deleting mini file', [
+            'removed' => $removed,
+        ]);
         BookMetadataExtracted::dispatch($this->book);
     }
 }

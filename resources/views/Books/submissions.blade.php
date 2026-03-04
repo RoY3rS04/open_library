@@ -1,9 +1,7 @@
 <x-layout title="Book Submissions" heading="Book Submissions">
-    <div class="flex flex-col gap-y-2">
+    <div class="grid grid-cols-2 gap-5">
         @foreach($books as $book)
-            <div class="flex items-center gap-x-5">
-                <p>{{ $book->title }}</p>
-            </div>
+            <x-card :book="$book"></x-card>
         @endforeach
     </div>
     {{ $books->links() }}

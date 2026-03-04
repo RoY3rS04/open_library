@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\UserRole;
 use App\Models\Book;
 use App\Models\User;
 use Illuminate\Support\Facades\Broadcast;
@@ -18,4 +19,8 @@ Broadcast::channel('users.{userId}', function (User $user, int $userId) {
     $broadcastUser = User::findOrFail($userId);
 
     return $user->id === $broadcastUser->id;
+});
+
+Broadcast::channel('users.admins.proposals', function (User $user) {
+    return $user->role === UserRole::Admin->value;
 });

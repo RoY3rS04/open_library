@@ -4,7 +4,6 @@ namespace App\Events;
 
 use App\Enums\NotificationType;
 use App\Models\Book;
-use App\Models\User;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PresenceChannel;
@@ -13,7 +12,7 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class BookMetadataExtracted implements ShouldBroadcast
+class NewBookProposal implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
@@ -33,14 +32,14 @@ class BookMetadataExtracted implements ShouldBroadcast
     public function broadcastOn(): array
     {
         return [
-            new PrivateChannel('books.' . $this->book->id),
+            new PrivateChannel('users.admins.proposals'),
         ];
     }
 
     public function broadcastWith(): array {
         return [
-            'type' => NotificationType::Success,
-            'title' => 'Your book has been processed successfully',
+          'type' => NotificationType::Information,
+            'title' => 'A new book proposal has been sent',
             'id' => uuid_create(),
             'action_url' => env('APP_URL') . '/books/' . $this->book->id,
             'action_desc' => 'Review it'

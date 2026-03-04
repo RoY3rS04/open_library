@@ -1,5 +1,5 @@
 @php use App\Enums\BookStatus; @endphp
-<x-layout :notification="session('notification')" title="{{$book->title}}" heading="{!! $book->title !!}">
+<x-layout title="{{$book->title}}" heading="{!! $book->title !!}">
     <section class="h-full flex items-center gap-x-5 min-h-0">
         <div class="flex-3 h-full min-h-0">
             <div class="w-full h-full flex items-start justify-center">
@@ -43,7 +43,7 @@
                     @can('update', $book)
                         <div class="flex items-center gap-x-4">
                             <a href="/books/{{ $book->id }}/edit" class="py-2 px-4 border-2 border-black">Edit</a>
-                            @if($book->status === BookStatus::Draft->value)
+                            @if($book->status === BookStatus::Draft->value || $book->status === BookStatus::Rejected->value)
                                 <form action="/books/{{ $book->id }}/request-approval" method="POST">
                                     @csrf
                                     <button class="cursor-pointer py-2 px-4 border-2 border-black">Send for Approval</button>

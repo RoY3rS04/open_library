@@ -4,8 +4,11 @@
     'heading' => '',
     'files' => '',
     'action' => null,
-    'notification' => null
 ])
+
+    @php
+        $notification = session('notification');
+    @endphp
 
     <!doctype html>
 <html lang="en">
@@ -19,7 +22,7 @@
     @endif
 </head>
 <body class="h-screen">
-<span class="hidden" id="user_id" data-user-id="{{ auth()->id() }}"></span>
+<span class="hidden" id="user_info" data-user-role="{{ Auth::user()->role }}" data-user-id="{{ auth()->id() }}"></span>
 <div class="h-full grid grid-cols-5 min-h-0">
     <x-navigation class="border-r border-gray-300"></x-navigation>
     <main class="col-start-2 -col-end-1 p-10 flex flex-col space-y-5 min-h-0">

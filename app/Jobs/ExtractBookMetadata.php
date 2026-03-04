@@ -46,6 +46,7 @@ class ExtractBookMetadata implements ShouldQueue
         $pdfPath = base_path('storage/app/private/' . $this->filePath);
 
         $outputPath = base_path('storage/app/private/mini/' . $this->filePath);
+        \Storage::makeDirectory('mini/books/');
 
         $process = new Process([
             '/usr/bin/qpdf',
@@ -62,6 +63,10 @@ class ExtractBookMetadata implements ShouldQueue
         if (!$process->isSuccessful()) {
             Log::error($process->getErrorOutput());
             \Storage::disk('local')->delete($this->filePath);
+            BookMetadataExtractionFailed::dispatch(
+                $this->user,
+                'Something went wrong',
+            );
             return;
         }
 

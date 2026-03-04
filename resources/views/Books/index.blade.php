@@ -1,5 +1,5 @@
 @php use App\Enums\BookStatus;use App\Enums\NotificationType; @endphp
-<x-layout :notification="session('notification')" title="Submitted Books" heading="Your submitted books">
+<x-layout title="Submitted Books" heading="Your submitted books">
     <x-slot:files>
         @vite(['resources/js/book_status_filter.js'])
     </x-slot:files>
