@@ -28,6 +28,7 @@ Route::middleware('auth')->group(function () {
     Route::patch('/books/{book}', [BookController::class, 'update']);
     Route::get('/books/{book}/download', [BookController::class, 'download']);
     Route::post('/books/{book}/request-approval', [BookController::class, 'requestApproval']);
+    Route::post('/books/{book}/approve', [BookController::class, 'approve']);
 
     Route::get('/settings', [AuthController::class, 'settings']);
     Route::delete('/logout', [AuthController::class, 'logout'])->name('logout');

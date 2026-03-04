@@ -5,10 +5,18 @@
 
 - Docker desktop or docker engine
 - node lts
+- php and composer
 - A gemini api key
 - A mailtrap user
 
 ### Steps
+
+#### Install Dependencies
+
+```bash
+composer install
+npm install
+```
 
 #### Start the docker image
 
@@ -16,7 +24,6 @@
 # Generate the docker image
 cd open_library
 docker compose build
-docker compose up -d
 ```
 
 #### .env file
@@ -27,11 +34,19 @@ cp .env.example .env
 ```
 Replace the .env values with your gemini api key, mailtrap user and password and reverb keys
 
+```bash
+# Generate app key
+php artisan key:generate
+```
 #### Start the app
 
+```bash
+# Start the images
+docker compose up -d
+```
+
 ```bash 
-# Run npm install and npm run dev
-npm install
+# Run npm run dev outside the docker image
 npm run dev
 ```
 

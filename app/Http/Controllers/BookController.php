@@ -187,4 +187,16 @@ class BookController extends Controller
             'id' => uuid_create()
         ]);
     }
+
+    public function approve(Book $book)
+    {
+        $book->status = BookStatus::Approved;
+        $book->save();
+
+        return back()->with('notification', [
+            'type' => NotificationType::Information,
+            'title' => 'Book approved successfully',
+            'id' => uuid_create()
+        ]);
+    }
 }
