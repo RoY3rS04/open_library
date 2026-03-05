@@ -167,6 +167,7 @@ class BookController extends Controller
         $topBooks = Book::where('status', BookStatus::Approved->value)
             ->orderBy('downloads', 'desc')
             ->limit(10)
+            ->with(['submittedBy', 'categories'])
         ->get();
 
         return view('Books.top', [
@@ -178,7 +179,7 @@ class BookController extends Controller
         \Gate::authorize('approve', Book::class);
 
         return view('Books.submissions', [
-            'books' => Book::where('status', BookStatus::Pending)->paginate(10)
+            'books' => Book::where('status', '!=', BookStatus::Draft)->paginate(10)
         ]);
     }
 

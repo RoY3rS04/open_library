@@ -29,7 +29,7 @@ class UpdateBookMetadataRequest extends FormRequest
             'release_date' => ['required', 'date'],
             'pages' => ['required', 'integer', 'min:1'],
             'language' => ['required', 'string', 'min:3', 'max:25'],
-            'edition' => ['required', 'string', 'min:3', 'max:25'],
+            'edition' => ['required', 'int', 'min:1'],
         ];
     }
 }

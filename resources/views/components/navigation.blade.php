@@ -1,6 +1,6 @@
 @php use App\Models\Book; @endphp
-<aside {{ $attributes->merge(['class' => 'h-full px-4 py-8 relative nav-container']) }}>
-    <nav class="flex flex-col h-full">
+<aside {{ $attributes->merge(['class' => 'h-full w-16 md:w-60 px-4 py-8 relative transition-all duration-300 ease-in nav-container']) }}>
+    <nav class="flex flex-col items-center md:items-start h-full">
         <x-navigation_item class="font-bold text-xl" link="/" link_title="OpenLibrary">
             <x-icons.logo class="size-10"></x-icons.logo>
         </x-navigation_item>
@@ -35,7 +35,7 @@
             @endauth
         </div>
     </nav>
-    <!-- <button class="absolute bg-gray-200 p-2 rounded-full top-1/2 -translate-y-1/2 -right-7 cursor-pointer nav-btn">
+    <button class="absolute bg-gray-100 p-2 text-gray-500 rounded-full opacity-0 z-[-1] md:opacity-100 md:z-1 top-1/2 -translate-y-1/2 -right-7 cursor-pointer nav-btn">
         <x-icons.chevron_left class="size-10"></x-icons.chevron_left>
-    </button> !-->
+    </button>
 </aside>

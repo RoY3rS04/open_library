@@ -48,12 +48,16 @@ class ExtractBookMetadata implements ShouldQueue
         $outputPath = base_path('storage/app/private/mini/' . $this->filePath);
         \Storage::makeDirectory('mini/books/');
 
+        $result = \Illuminate\Support\Facades\Process::run('qpdf --show-npages '. escapeshellarg($pdfPath));
+
+        $pages = (int) trim($result->output());
+
         $process = new Process([
             '/usr/bin/qpdf',
             $pdfPath,
             '--pages',
             $pdfPath,
-            '1-10',
+            $pages < 10 ? "1-{$pages}" : '1-10',
             '--',
             $outputPath,
         ]);

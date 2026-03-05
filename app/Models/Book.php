@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\BookStatus;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -28,6 +29,10 @@ class Book extends Model implements HasMedia
 
     protected $hidden = [
         'pdf_path',
+    ];
+
+    protected $casts = [
+      'status' => BookStatus::class,
     ];
 
     public function authors(): BelongsToMany {

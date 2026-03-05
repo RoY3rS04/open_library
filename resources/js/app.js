@@ -12,8 +12,18 @@ const authEl = document.getElementById('user_info');
 const authId = authEl.dataset.userId;
 const authRole = authEl.dataset.userRole;
 
+const nav = document.querySelector('.nav-container');
+const collapseNavBtn =document.querySelector('.nav-btn');
+
 const notificationsContainer = document.getElementById('notifications');
 const notificationCloseBtns = getCloseNotificationBtns();
+const navTitles = document.querySelectorAll('.nav-title');
+
+collapseNavBtn.addEventListener('click', (e) => {
+   nav.classList.toggle('md:w-60');
+   nav.children[0].classList.toggle('md:items-start');
+   navTitles.forEach((nav) => nav.classList.toggle('md:block'));
+});
 
 registerClickOnCloseNotificationBtns(notificationCloseBtns);
 

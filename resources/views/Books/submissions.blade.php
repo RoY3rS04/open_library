@@ -1,8 +1,8 @@
 <x-layout title="Book Submissions" heading="Book Submissions">
-    <div class="grid grid-cols-2 gap-5">
-        @foreach($books as $book)
-            <x-card :book="$book"></x-card>
-        @endforeach
-    </div>
+    @if($books->count())
+        <x-books_table :admin="true" :books="$books"></x-books_table>
+    @else
+        <h1>Nothing here yet!</h1>
+    @endif
     {{ $books->links() }}
 </x-layout>

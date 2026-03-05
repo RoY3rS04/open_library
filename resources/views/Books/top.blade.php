@@ -1,7 +1,3 @@
 <x-layout title="Top Books" heading="Top Books">
-    @foreach($books as $book)
-        <div>
-            {{ $book->title }}
-        </div>
-    @endforeach
+    <x-books_table :books="$books"></x-books_table>
 </x-layout>
