@@ -6,8 +6,8 @@
     <title>Register</title>
     @vite('resources/css/app.css')
 </head>
-<body class="h-screen flex items-center">
-    <div class="w-2xl shadow-2xl mx-auto p-6">
+<body class="h-screen flex items-center bg-gray-50">
+    <div class="bg-white min-w-100 rounded-md border border-gray-200 mx-auto p-6">
         <header class="flex flex-col items-center">
             <x-icons.logo class="size-15"></x-icons.logo>
             <h1 class="font-bold text-2xl">Open Library</h1>

@@ -7,11 +7,11 @@
 @endphp
 
 <x-layout title="Update Your Book" heading="{{ $book->title }}">
-    <div class="flex gap-x-5">
-        <div class="flex-2">
-            <img src="{{ $book->getFirstMediaUrl('covers') }}" alt="Cover image">
+    <div class="h-full space-y-5 md:flex md:items-center gap-x-5">
+        <div class="w-full h-60 md:h-full md:flex-2">
+            <img class="w-full h-full object-contain" src="{{ $book->getFirstMediaUrl('covers') }}" alt="Cover image">
         </div>
-        <div class="flex-3 min-w-0">
+        <div class="md:flex-3 rounded-md border border-gray-200 bg-white p-4 w-full overflow-y-auto">
             <form method="POST" class="space-y-3 text-sm" action="/books/{{ $book->id }}">
                 @csrf
                 @method('PATCH')
@@ -31,7 +31,7 @@
                 @error('categories')
                 <span class="text-red-500 text-xs my-2 block">{{ $message }}</span>
                 @enderror
-                <div class="flex gap-x-2 items-center max-w-full">
+                <div class="grid grid-cols-2 gap-2 md:flex md:gap-x-2 md:items-center max-w-full">
                     <x-Forms.input name="release_date" type="date" label="Release Date" class="w-full" value="{{ $book->release_date }}"></x-Forms.input>
                     @error('release_date')
                     <span class="text-red-500 text-xs my-2 block">{{ $message }}</span>
@@ -50,8 +50,8 @@
                     @enderror
                 </div>
                 <div class="flex items-center gap-x-2">
-                    <button class="p-2 border-black border-2 cursor-pointer">Update Book Metadata</button>
-                    <button form="delete-book" class="p-2 border-2 border-black cursor-pointer">Delete Book</button>
+                    <button class="flex-1 p-2 text-xs border-black border-2 cursor-pointer">Update Book Metadata</button>
+                    <button form="delete-book" class="flex-1 p-2 text-xs border-2 border-black cursor-pointer">Delete Book</button>
                 </div>
             </form>
             <form id="delete-book" action="/books/{{ $book->id }}" method="POST">

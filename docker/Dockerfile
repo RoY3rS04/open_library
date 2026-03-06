@@ -11,7 +11,7 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # Install any PHP extension easily
-RUN install-php-extensions imagick exif
+RUN install-php-extensions imagick exif intl
 
 COPY . $APP_BASE_DIR
 

@@ -86,6 +86,12 @@ services:
       test: [ "CMD", "healthcheck-schedule" ]
       start_period: 10s
 
+  mailpit:
+    image: axllent/mailpit
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+
 volumes:
   db_data:
   redis_data:

@@ -27,7 +27,7 @@ class BookPolicy
      */
     public function view(User $user, Book $book): bool
     {
-        return $book->status === BookStatus::Approved->value ||
+        return $book->status === BookStatus::Approved ||
             $book->submitted_by === $user->id ||
             $user->role === UserRole::Admin->value;
     }

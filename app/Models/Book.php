@@ -33,6 +33,7 @@ class Book extends Model implements HasMedia
 
     protected $casts = [
       'status' => BookStatus::class,
+        'release_date' => 'datetime',
     ];
 
     public function authors(): BelongsToMany {

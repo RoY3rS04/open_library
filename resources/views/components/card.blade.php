@@ -1,6 +1,6 @@
- @php use Carbon\Carbon @endphp
+@php use Carbon\Carbon @endphp
 
-<div class="flex flex-col h-75 overflow-hidden rounded-3xl border-2 border-black">
+<div class="flex flex-col h-75 overflow-hidden rounded-3xl border border-gray-300 bg-white">
     <div class="w-full h-full flex-1 min-h-0 flex gap-x-4">
         <div class="flex-5 w-full flex flex-col p-4 space-y-2 overflow-scroll">
             <div class="flex justify-between items-center">
@@ -35,29 +35,29 @@
                 </div>
             </div>
         </div>
-        <div class="flex-4 w-full h-full overflow-hidden border-l-2 border-black">
+        <div class="flex-4 w-full h-full overflow-hidden border-l border-gray-200">
             <img class="w-full h-full object-cover object-center" src="{{ $book->getFirstMediaUrl('covers') }}" alt="Book Cover">
         </div>
     </div>
-    <div class=" flex items-center border-t-2 border-black">
-        <div class="flex-1 border-r p-3 relative text-end">
+    <div class=" flex items-center border-t border-gray-200">
+        <div class="flex-1 border-r border-gray-200 p-3 relative text-end">
             <span class="text-xs absolute top-2 left-2">Pages</span>
             <span class="text-sm">{{ $book->pages }}</span>
         </div>
-        <div class="flex-1 border-r p-3 relative text-end">
+        <div class="flex-1 border-r border-gray-200 p-3 relative text-end">
             <span class="text-xs absolute top-2 left-2">
                 <x-icons.calendar class="size-2"></x-icons.calendar>
             </span>
             <span class="text-sm">{{ Carbon::parse($book->release_date)->year }}</span>
         </div>
-        <div class="flex-1 border-r p-3 relative text-end">
+        <div class="flex-1 border-r border-gray-200 p-3 relative text-end">
             <span class="text-xs absolute top-2 left-2">
                 <x-icons.language></x-icons.language>
             </span>
             <span class="text-sm text-end">{{ $book->language }}</span>
         </div>
         <div class="flex-1">
-            <a class="block p-3 relative text-end" href="/books/{{ $book->id }}/download">
+            <a class="block p-3 border-gray-200 relative text-end" href="/books/{{ $book->id }}/download">
                 <span class="text-xs absolute top-2 left-2">
                     <x-icons.download></x-icons.download>
                 </span>

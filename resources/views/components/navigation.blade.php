@@ -1,22 +1,22 @@
 @php use App\Models\Book; @endphp
-<aside {{ $attributes->merge(['class' => 'h-full w-16 md:w-60 px-4 py-8 relative transition-all duration-300 ease-in nav-container']) }}>
+<aside {{ $attributes->merge(['class' => 'h-full w-10 md:w-60 px-4 py-8 relative transition-all duration-300 ease-in nav-container']) }}>
     <nav class="flex flex-col items-center md:items-start h-full">
         <x-navigation_item class="font-bold text-xl" link="/" link_title="OpenLibrary">
-            <x-icons.logo class="size-10"></x-icons.logo>
+            <x-icons.logo class="size-6 md:size-10"></x-icons.logo>
         </x-navigation_item>
         <div class="flex-1 flex flex-col gap-y-6 mt-10">
             <x-navigation_item link="/books/top" link_title="Top Books">
-                <x-icons.chart class="size-6"></x-icons.chart>
+                <x-icons.chart></x-icons.chart>
             </x-navigation_item>
             <x-navigation_item link="/books/create" link_title="Upload a Book">
-                <x-icons.upload class="size-6"></x-icons.upload>
+                <x-icons.upload></x-icons.upload>
             </x-navigation_item>
             <x-navigation_item link="/books" link_title="Submitted Books">
-                <x-icons.archive class="size-6"></x-icons.archive>
+                <x-icons.archive></x-icons.archive>
             </x-navigation_item>
             @can('approve', Book::class)
                 <x-navigation_item link="/books/submissions" link_title="Book Submissions">
-                    <x-icons.submissions class="size-6"></x-icons.submissions>
+                    <x-icons.submissions></x-icons.submissions>
                 </x-navigation_item>
             @endcan
         </div>

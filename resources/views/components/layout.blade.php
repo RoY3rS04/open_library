@@ -25,12 +25,12 @@
 <span class="hidden" id="user_info" data-user-role="{{ Auth::user()->role }}" data-user-id="{{ auth()->id() }}"></span>
 <div class="h-full flex min-h-0">
     <x-navigation class="border-r border-gray-300"></x-navigation>
-    <main class="flex-1 p-10 flex flex-col space-y-5 min-h-0">
+    <main class="flex-1 pb-5 px-5 pt-10 md:p-10 flex flex-col space-y-5 min-h-0 overflow-x-scroll">
         <header class="flex items-center justify-between">
-            <h1 class="text-2xl">{{ $heading }}</h1>
+            <h1 class="md:text-2xl">{{ $heading }}</h1>
             {{ $action }}
         </header>
-        <article class="flex-1 min-h-0 overflow-auto">{{ $slot }}</article>
+        <article class="flex-1 min-h-0">{{ $slot }}</article>
     </main>
 </div>
 <div id="notifications" class="absolute space-y-2 bottom-0 right-0 min-w-80 p-3 z-10">

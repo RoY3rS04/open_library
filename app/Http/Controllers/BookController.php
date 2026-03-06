@@ -57,7 +57,7 @@ class BookController extends Controller
 
     public function store(BookRequest $request) {
 
-        \Gate::allows('create', Book::class);
+        \Gate::authorize('create', Book::class);
 
         $path = $request->file('file')
             ->storeAs('books', uuid_create() . '.pdf');
